@@ -1,13 +1,31 @@
-verion: '3.1'
-
 services:
-  db:
-    image: mariadb
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-  adminer:
-    image: adminer
+
+  maria_db:
+    image: "mariadb:10.5.8"
+    container_name: maria-db-10.5.8
     restart: always
     ports:
-      - 8081:8081
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: dev
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: admin
+
+  openssh-server:
+    image: ghcr.io/linuxserver/openssh-server
+    container_name: openssh-server
+    hostname: openssh-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Toronto
+      - PUBLIC_KEY_FILE=/Users/marcosgomes/.ssh/id_rsa.pub
+      - USER_NAME=admin
+    volumes:
+      - /Users/marcosgomes/dev/server/openssh/appdata/config:/config
+
+    ports:
+      - 2222:2222
+    restart: unless-stopped
+#    restart: always
